@@ -4,16 +4,21 @@ import java.util.Objects;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 public class CompleteWeightedTag implements WeightedTag {
 
   private final String id, name, description;
+  private final Preference preference;
   private final float weight;
 
-  public CompleteWeightedTag(String id, String name, String description, float weight) {
+  public CompleteWeightedTag(String id, String name, String description, float weight, Preference preference) {
     this.id = id;
     this.name = name;
     this.description = (description == null) ? "" : description;
     this.weight = weight;
+    this.preference = preference;
     if (this.id == null) {
       throw new NullPointerException("id cannot be null");
     }
@@ -66,29 +71,65 @@ public class CompleteWeightedTag implements WeightedTag {
     return !this.description.isEmpty();
   }
 
+  @Override
+  public boolean hasPreference() {
+    return this.preference != null;
+  }
+
+  @Override
+  public Preference getPreference() {
+    return preference;
+  }
+
+
   public float getWeight() {
     return this.weight;
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    CompleteWeightedTag that = (CompleteWeightedTag) o;
-    return Float.compare(that.weight, weight) == 0 &&
-        id.equals(that.id) &&
-        name.equals(that.name) &&
-        description.equals(that.description);
+  public int hashCode() {
+    return Objects.hash(id, name, description, weight, preference);
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(id, name, description, weight);
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    CompleteWeightedTag other = (CompleteWeightedTag) obj;
+    if (description == null) {
+      if (other.description != null) {
+        return false;
+      }
+    } else if (!description.equals(other.description)) {
+      return false;
+    }
+    if (id == null) {
+      if (other.id != null) {
+        return false;
+      }
+    } else if (!id.equals(other.id)) {
+      return false;
+    }
+    if (name == null) {
+      if (other.name != null) {
+        return false;
+      }
+    } else if (!name.equals(other.name)) {
+      return false;
+    }
+    if (Float.floatToIntBits(weight) != Float.floatToIntBits(other.weight)) {
+      return false;
+    }
+    return true;
   }
+
 
   @Override
   public String toString() {

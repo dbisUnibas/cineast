@@ -13,7 +13,7 @@
   "retriever": {
     "threadPoolSize": 2,
     "maxResults": 10000,
-    "resultsPerModule": 5000,
+    "resultsPerModule": 15000,
     "features": {
       "semantic" : [
         {"feature": "ConceptMasksAde20k", "weight" : 1.0}
@@ -121,10 +121,8 @@
     "enableRest": true,
     "enableRestLiveDoc": true,
     "enableRestSecure": false,
-    "enableLegacy": false,
     "httpPort": 4567,
     "httpsPort": 4568,
-    "legacyPort": 12345,
     "threadPoolSize": 12,
     "serveContent": false,
     "serveUI": false,

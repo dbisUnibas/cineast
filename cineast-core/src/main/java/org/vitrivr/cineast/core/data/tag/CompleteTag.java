@@ -7,11 +7,18 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class CompleteTag implements Tag {
 
   private final String id, name, description;
+  private final Preference preference;
 
   public CompleteTag(String id, String name, String description) {
+    this(id, name, description, null);
+  }
+
+  public CompleteTag(String id, String name, String description, Preference preference) {
     this.id = id;
     this.name = name;
     this.description = (description == null) ? "" : description;
+    this.preference = preference;
+
     if (this.id == null) {
       throw new NullPointerException("id cannot be null for " + this.toString());
     }
@@ -44,6 +51,10 @@ public class CompleteTag implements Tag {
     return description;
   }
 
+  public Preference getPreference() {
+    return preference;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -53,14 +64,16 @@ public class CompleteTag implements Tag {
       return false;
     }
     CompleteTag that = (CompleteTag) o;
-    return id.equals(that.id) &&
-        name.equals(that.name) &&
-        description.equals(that.description);
+    return Objects.equals(id, that.id) &&
+        Objects.equals(name, that.name) &&
+        Objects.equals(description, that.description) &&
+        preference == that.preference;
   }
+
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, description);
+    return Objects.hash(id, name, description, preference);
   }
 
   @Override
@@ -81,6 +94,11 @@ public class CompleteTag implements Tag {
   @Override
   public boolean hasDescription() {
     return !this.description.isEmpty();
+  }
+
+  @Override
+  public boolean hasPreference() {
+    return this.preference != null;
   }
 
 }

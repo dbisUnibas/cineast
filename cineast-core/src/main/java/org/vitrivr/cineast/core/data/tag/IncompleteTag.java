@@ -5,15 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.vitrivr.cineast.core.db.dao.reader.TagReader;
 
 public class IncompleteTag implements WeightedTag {
 
   private final String id, name, description;
+  private final Preference preference;
   private final float weight;
 
-  public IncompleteTag(String id, String name, String description) {
-    this(id, name, description, 1f);
+  public IncompleteTag(String id, String name, String description, Preference preference) {
+    this(id, name, description, 1f, preference);
   }
+
 
 
   /**
@@ -25,24 +28,25 @@ public class IncompleteTag implements WeightedTag {
    * @param weight      The weight {@link IncompleteTag}, optional, defaults to 1.0
    */
   @JsonCreator
-  public IncompleteTag(@JsonProperty(value = "id", required = true) String id,
+  public IncompleteTag(@JsonProperty(value = TagReader.TAG_ID_COLUMNNAME, required = true) String id,
       @JsonProperty(value = "name") String name,
       @JsonProperty(value = "description") String description,
-      @JsonProperty(value = "weight", defaultValue = "1.0f") Float weight) {
+      @JsonProperty(value = "weight", defaultValue = "1.0f") Float weight,
+      @JsonProperty(value = "preference") Preference preference) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.weight = (weight == null) ? 1f : weight;
+    this.preference = preference;
   }
-
   public IncompleteTag(Tag t) {
-    this(
-        (t != null && t.hasId()) ? t.getId() : null,
+    this((t != null && t.hasId()) ? t.getId() : null,
         (t != null && t.hasName()) ? t.getName() : null,
         (t != null && t.hasDescription()) ? t.getDescription() : null,
-        (t != null && t instanceof WeightedTag) ? ((WeightedTag) t).getWeight() : 1f
-    );
+        (t != null && t instanceof WeightedTag) ? ((WeightedTag) t).getWeight() : 1f,
+        (t != null && t.hasPreference()) ? (t.getPreference()) : null);
   }
+
 
   @Override
   public String getId() {
@@ -75,6 +79,16 @@ public class IncompleteTag implements WeightedTag {
   }
 
   @Override
+  public boolean hasPreference() {
+    return this.preference != null;
+  }
+
+  @Override
+  public Preference getPreference() {
+    return this.preference;
+  }
+
+  @Override
   public float getWeight() {
     return this.weight;
   }
@@ -91,12 +105,13 @@ public class IncompleteTag implements WeightedTag {
     return Float.compare(that.weight, weight) == 0 &&
         Objects.equals(id, that.id) &&
         Objects.equals(name, that.name) &&
-        Objects.equals(description, that.description);
+        Objects.equals(description, that.description) &&
+        preference == that.preference;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, description, weight);
+    return Objects.hash(id, name, description, preference, weight);
   }
 
   @Override
